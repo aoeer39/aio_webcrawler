@@ -3,3 +3,4 @@ aiofiles
 aiohttp-compress
 beautifulsoup4
 lxml
+requests
