@@ -9,8 +9,8 @@ import csv
 import traceback
 
 
-START_YEAR = 1957
-STOP_YEAR = 2020
+START_YEAR = 2022
+STOP_YEAR = 2022
 ROOT = 'https://space.skyrocket.de'
 
 total = 0
