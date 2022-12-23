@@ -1,0 +1,4 @@
+aiocsv
+aiofiles
+aiohttp-compress
+beautifulsoup4
