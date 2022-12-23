@@ -55,7 +55,7 @@ def get_pic_url_from_csv(csv_file):
 
 
 def check_filename(name):
-    rstr = r"[\/\\\:\*\?\"\<\>\|]"  # '/ \ : * ? " < > |'
+    rstr = r"[\/\\\:\*\?\"\<\>\|\r\n]"  # '/ \ : * ? " < > |'
     new_title = re.sub(rstr, "_", name)  # 替换为下划线
     return new_title
 
