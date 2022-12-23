@@ -4,3 +4,4 @@ aiohttp-compress
 beautifulsoup4
 lxml
 requests
+tqdm
