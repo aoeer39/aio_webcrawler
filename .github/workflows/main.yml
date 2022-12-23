@@ -1,0 +1,31 @@
+name: Main
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
+      - name: Make Directories
+        run: |
+          mkdir img
+          mkdir doc
+      - name: Run Code
+        run: |
+          python aio_get_sat_urls.py
+          python aio_get_sat_info.py
+      - name: Upload files
+        uses: actions/upload-artifact@v3
+        with:
+          name: all
+          path: *
