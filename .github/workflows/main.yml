@@ -1,7 +1,12 @@
 name: Main
 
 on:
+  schedule:
+    - cron: '0 16 1 1,7 *'
   workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
 
 jobs:
   main:
@@ -16,20 +21,29 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: pip install -r requirements.txt
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
       - name: Make Directories
         run: |
           mkdir img
           mkdir doc
-      - name: Run Code
-        run: |
-          python aio_get_sat_urls.py
-          python aio_get_sat_info.py
+      - name: Fetch Indexes
+        run: python aio_get_sat_urls.py
+      - name: Fetch Information
+        run: python aio_get_sat_info.py
       - name: Zip files
         run: |
           cd ../
-          zip -r workspace.zip ${{ github.workspace }}
-          sudo mv workspace.zip ${{ github.workspace }}
+          zip -r workspace.zip aio_webcrawler
+          sudo mv workspace.zip aio_webcrawler
+      - name: Upload Files
+        run: |
+          git switch --orphan files$(date +%s%3N)
+          git add -f workspace.zip
+          git config user.name github-actions
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Files"
+          git push -f origin authors-cache
       - name: Upload files
         uses: actions/upload-artifact@v3
         with:
