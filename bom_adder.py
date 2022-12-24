@@ -26,4 +26,3 @@ if __name__ == "__main__":
     files = get_all_file('doc')
     for each in files:
         add_bom(each)
-
