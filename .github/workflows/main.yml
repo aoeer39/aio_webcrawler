@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Install Zip
+        run: sudo apt install zip
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -24,8 +26,13 @@ jobs:
         run: |
           python aio_get_sat_urls.py
           python aio_get_sat_info.py
+      - name: Zip files
+        run: |
+          cd ../
+          zip -r workspace.zip ${{ github.workspace }}
+          sudo mv workspace.zip ${{ github.workspace }}
       - name: Upload files
         uses: actions/upload-artifact@v3
         with:
-          name: all
-          path: ${{ github.workspace }}
+          name: workspace
+          path: workspace.zip
