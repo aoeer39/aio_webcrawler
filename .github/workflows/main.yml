@@ -43,8 +43,3 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update Files"
           git push -f origin files-$BRANCHTIME
-      - name: Upload files
-        uses: actions/upload-artifact@v3
-        with:
-          name: workspace
-          path: workspace.zip
