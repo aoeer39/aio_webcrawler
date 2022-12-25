@@ -1,8 +1,12 @@
 name: Main
 
 on:
-  push:
+  schedule:
+    - cron: '0 16 1 1,7 *'
   workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
 
 jobs:
   main:
@@ -15,17 +19,33 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
-      - run: pip install -r requirements.txt
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
       - name: Make Directories
         run: |
           mkdir img
           mkdir doc
-      - name: Run Code
+      - name: Fetch Indexes
+        run: python aio_get_sat_urls.py
+      - name: Fetch Information
+        run: python aio_get_sat_info.py
+      - name: Zip files
         run: |
-          python aio_get_sat_urls.py
-          python aio_get_sat_info.py
-      - name: Upload files
-        uses: actions/upload-artifact@v3
-        with:
-          name: all
-          path: ${{ github.workspace }}
+          cd ../
+          zip -r aio_webcrawler.zip aio_webcrawler
+          sudo mv aio_webcrawler.zip aio_webcrawler
+      - name: Make Index Page for Site (Schedule)
+        if: ${{ github.event_name == 'schedule' && github.repository_owner == 'aoeer39' }}
+        run: echo "<!DOCTYPE html><html><head><meta charset="utf-8"><title>下载运行结果</title><style>done{color:#3D7D3F}h1,h2,h3{text-align:center}</style></head><body><h1><done>•</done> 选择下载渠道</h1><h2>稳定</h2><h3><a href="https://satwiki-files.netlify.app/aio_webcrawler.zip">Netlify CDN</a></h3><h2>不稳定（DNS 污染）</h2><h3><a href="https://cdn.jsdelivr.net/gh/aoeer39/aio_webcrawler@site-files/aio_webcrawler.zip">jsDelivr</a></h3><h3><a href="https://github.com/aoeer39/aio_webcrawler/raw/site-files/aio_webcrawler.zip">GitHub Raw</a></h3></body></html>" > index.html
+      - name: Make Index Page for Site (Workflow Dispatch)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.repository_owner == 'aoeer39' }}
+        run: echo "<!DOCTYPE html><html><head><meta charset="utf-8"><title>下载运行结果</title><style>done{color:#F4D345}h1,h2,h3{text-align:center}</style></head><body><h1><done>•</done> 选择下载渠道</h1><h2>稳定</h2><h3><a href="https://satwiki-files.netlify.app/aio_webcrawler.zip">Netlify CDN</a></h3><h2>不稳定（DNS 污染）</h2><h3><a href="https://cdn.jsdelivr.net/gh/aoeer39/aio_webcrawler@site-files/aio_webcrawler.zip">jsDelivr</a></h3><h3><a href="https://github.com/aoeer39/aio_webcrawler/raw/site-files/aio_webcrawler.zip">GitHub Raw</a></h3></body></html>" > index.html
+      - name: Upload Files
+        run: |
+          git switch --orphan site-files
+          git add -f aio_webcrawler.zip
+          git add -f index.html
+          git config user.name github-actions
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update Files"
+          git push -f origin site-files
