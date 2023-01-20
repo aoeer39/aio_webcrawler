@@ -52,8 +52,8 @@ def get_all_sat_url():
     这个函数会调用get_index，来获取全部的卫星链接；
     在这个过程中进行去这个函数会调用get_index，来获取全部的卫星链接，在这个过程中进行去重
     '''
-    START_YEAR = 1957
-    STOP_YEAR = 2021
+    START_YEAR = 2023
+    STOP_YEAR = 2023
     all_satellites_urls = []
     index_tasks = []
     for year in range(START_YEAR, STOP_YEAR+1):
