@@ -15,7 +15,7 @@ from bs4.element import NavigableString
 from tqdm import tqdm
 
 
-IS_SOLO = False  # 这个变量用于控制单星或者系列星的CSV存储模式 True时保存到同一个CSV文件中
+IS_SOLO = True  # 这个变量用于控制单星或者系列星的CSV存储模式 True时保存到同一个CSV文件中
 Threads_N = 50  # 协程任务数
 
 TABLE_HEADER = ['原名', '国籍', '任务类型', 'Operator', '研发机构',
